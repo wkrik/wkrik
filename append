@@ -1,0 +1,34 @@
+#! /bin/sh
+
+CHANGE=""
+
+if [ ! "$1" ]; then
+  echo
+  echo  "Append what to the end of the file before '.jpg'?"
+  echo 
+  echo  "Syntax: append [pattern]"
+  echo
+  #echo  "IE: append \Trip - \"
+  exit
+else
+  PAT="$1"
+fi
+
+rm -rf /tmp/1
+mkdir -p /tmp/1
+
+
+ls -1 * | egrep -i '(jpg|gif|bmp|png|tif)' > /tmp/l.txt
+cat /tmp/l.txt | while read i
+do
+  found=`echo "$i" | egrep -i '(gif|jpg|mpg|tif)'`
+  if [ -n "$found" ]; then
+    if [ -f "$i" ]; then
+      pre=`echo "$i" | cut -d"." -f1`
+      post=`echo "$i" | cut -d"." -f2-`
+      mv "$i"  "/tmp/1/${pre}${PAT}.${post}"
+      echo "$i" --- "$pre$PAT.$post"
+    fi
+  fi
+done
+mv /tmp/1/* ./
